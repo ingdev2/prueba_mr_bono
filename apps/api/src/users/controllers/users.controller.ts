@@ -10,6 +10,9 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CreateUserDto } from '../dto/create_user.dto';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { RolesEnum } from 'src/utils/enums/roles.enum';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -19,47 +22,31 @@ export class UsersController {
 
   // POST METHODS //
 
-  // @EnableAuditLog()
+  // @Auth(RolesEnum.ADMIN)
   @Post('/createUser')
-  async transformGenderNumber() {
-    return await this.usersService.createUser();
+  async transformGenderNumber(@Body() newUserDto: CreateUserDto) {
+    return await this.usersService.createUser(newUserDto);
   }
 
   // GET METHODS //
 
-  // @Auth(AdminRolType.SUPER_ADMIN, AdminRolType.ADMIN)
-  @Get('/getAllUsers')
+  @Auth(RolesEnum.ADMIN)
+  @Get('/getAll')
   async getAllUsers() {
     return await this.usersService.getAllUsers();
   }
 
-  // @Auth(AdminRolType.SUPER_ADMIN, AdminRolType.ADMIN)
+  @Auth(RolesEnum.ADMIN)
   @Get('/getUser/:id')
-  async getUsersById() {
-    return await this.usersService.getUsersById();
+  async getUsersById(@Param('id') id: string) {
+    return await this.usersService.getUsersById(id);
   }
 
   // PATCH METHODS //
 
-  // @EnableAuditLog()
-  // @Auth(
-  //   AdminRolType.SUPER_ADMIN,
-  //   UserRolType.USER,
-  // )
+  @Auth(RolesEnum.ADMIN)
   @Patch('/updatePassword/:id')
   async updateUserPassword() {
     return await this.usersService.updateUserPassword();
-  }
-
-  @Patch('/resetPassword')
-  async resetUserPassword() {
-    return await this.usersService.resetUserPassword();
-  }
-
-  // @EnableAuditLog()
-  // @Auth(AdminRolType.SUPER_ADMIN, AdminRolType.ADMIN)
-  @Patch()
-  async banUsers() {
-    return await this.usersService.banUsers();
   }
 }

@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 require('dotenv').config();
 
 import { UsersModule } from './users/users.module';
+import { RoleModule } from './role/role.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { UsersModule } from './users/users.module';
       logging: false,
     }),
     UsersModule,
+    RoleModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
